@@ -197,7 +197,7 @@ def generate_definitions_lines(name, textEntries):
 
 	for entry in textEntries:
 		if entry.definition:
-			yield "#define {} ${:04X}\n".format(entry.definition, entry.stringId)
+			yield "#define {} ${:03X}\n".format(entry.definition, entry.stringId)
 
 	yield "\n#endif // TEXT_DEFINITIONS_{}\n".format(name)
 
