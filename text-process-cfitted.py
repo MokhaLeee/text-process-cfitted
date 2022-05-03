@@ -212,7 +212,7 @@ def generate_cheader_lines(name, textEntries):
 		if entry.definition:
 			yield "\tENUM_{} = 0x{:03X},\n".format(entry.definition, entry.stringId)
 	
-	yield "}\n"
+	yield "};\n"
 
 
 def generate_text_binary(parseFileExe, textEntry, sourceFile, targetFile):
