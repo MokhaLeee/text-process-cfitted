@@ -201,6 +201,20 @@ def generate_definitions_lines(name, textEntries):
 
 	yield "\n#endif // TEXT_DEFINITIONS_{}\n".format(name)
 
+
+def generate_cheader_lines(name, textEntries):
+	yield "// Msg index\n"
+	yield "// DO NOT EDIT!\n\n"
+	yield "#pragma once\n"
+	yield "enum{\n"
+	
+	for entry in textEntries:
+		if entry.definition:
+			yield "\tENUM_{} = ${:03X},\n".format(entry.definition, entry.stringId)
+	
+	yield "}\n"
+
+
 def generate_text_binary(parseFileExe, textEntry, sourceFile, targetFile):
 	import subprocess as sp
 
@@ -225,18 +239,20 @@ def main(args):
 	argParse.add_argument('--depends', default = None, nargs='*', help = 'files that text depends on (typically ParseDefinitions.txt)')
 	argParse.add_argument('--force-refresh', action = 'store_true', help = 'pass to forcefully refresh generated files')
 	argParse.add_argument('--verbose', action = 'store_true', help = 'print processing details to stdout')
-
+	argParse.add_argument('--c-header', default = 'TextHeader.h', help = 'name of the c-header for msg index')
+	
 	arguments = argParse.parse_args(args)
 
-	inputPath     = arguments.input
-	outputPath    = arguments.installer
-	outputDefPath = arguments.definitions
-	parserExePath = arguments.parser_exe
-	forceRefresh  = True if arguments.force_refresh else False
-	verbose       = True if arguments.verbose else False
+	inputPath 		= arguments.input
+	outputPath	 	= arguments.installer
+	outputDefPath	= arguments.definitions
+	parserExePath	= arguments.parser_exe
+	cheaderPath		= arguments.c_header
+	forceRefresh	= True if arguments.force_refresh else False
+	verbose			= True if arguments.verbose else False
 
 	timeThreshold = 0.0
-
+	
 	if not arguments.depends:
 		# Hacky thing to automatically depend on ParseDefinitions.txt if the parser is ParseFile
 
@@ -372,13 +388,19 @@ def main(args):
 			f.write("}\n\n")
 
 			f.write("#endif // TEXT_INSTALLER_{}\n".format(macroizedInputName))
-
+		
+		
 	except ParseFileError as e:
 		os.remove(outputPath)
 		sys.exit("ERROR: ParseFile errored while parsing text for {}:\n  {}".format(e.textEntry.get_pretty_identifier(), e.errDesc))
 
 	with open(outputDefPath, 'w') as f:
 		f.writelines(generate_definitions_lines(macroizedInputName, entryList))
+	
+	with open(cheaderPath, "w") as f:		
+		f.writelines(generate_cheader_lines(macroizedInputName, entryList))
 
+		
+	
 if __name__ == '__main__':
 	main(sys.argv[1:])

@@ -1,6 +1,0 @@
-[submodule "NMM2CSV"]
-	path = NMM2CSV
-	url = https://github.com/FireEmblemUniverse/NMM2CSV
-[submodule "TMX2EA"]
-	path = TMX2EA
-	url = https://github.com/StanHash/tmx2ea
