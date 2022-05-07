@@ -377,11 +377,15 @@ def main(args):
 				# Write include
 
 				f.write("{}:\n".format(textDataLabel))
-
-				if hasParser:
-					f.write('#incbin "{}"\n'.format(os.path.relpath(dataFileName, os.path.dirname(outputPath))))
-				else:
-					f.write('#incext ParseFile "{}"\n'.format(os.path.relpath(textFileName, os.path.dirname(outputPath))))
+				
+				
+				# # here to null parser judgement to introduce cn-character
+				# if hasParser:
+					# f.write('#incbin "{}"\n'.format(os.path.relpath(dataFileName, os.path.dirname(outputPath))))
+				# else:
+					# f.write('#incext ParseFile "{}"\n'.format(os.path.relpath(textFileName, os.path.dirname(outputPath))))
+				
+				f.write('#incbin "{}"\n'.format(os.path.relpath(dataFileName, os.path.dirname(outputPath))))
 
 				f.write("setText(${:X}, {})\n\n".format(entry.stringId, textDataLabel))
 
